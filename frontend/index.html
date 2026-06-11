@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Peligrosidad para Transportistas</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f1117;
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #1a1d2e;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 2px solid #2d3748;
+        }
+
+        header h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #63b3ed;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .badge-live { background: #22543d; color: #68d391; }
+
+        .layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ── PANEL IZQUIERDO ── */
+        .panel {
+            width: 340px;
+            background: #1a1d2e;
+            border-right: 1px solid #2d3748;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .panel-section {
+            padding: 16px;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .panel-section h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #718096;
+            margin-bottom: 12px;
+        }
+
+        /* Niveles de peligro */
+        .estado-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            background: #2d3748;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .estado-item:hover { background: #3a4a5c; }
+        .estado-nombre { font-size: 0.85rem; }
+
+        .nivel-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .nivel-Bajo     { background: #276749; color: #9ae6b4; }
+        .nivel-Medio    { background: #744210; color: #fbd38d; }
+        .nivel-Alto     { background: #742a2a; color: #feb2b2; }
+        .nivel-Crítico  { background: #521b41; color: #fbb6ce; }
+
+        /* Calculadora de rutas */
+        select, input {
+            width: 100%;
+            padding: 8px 10px;
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #3182ce;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        button:hover { background: #2b6cb0; }
+        button:disabled { background: #4a5568; cursor: not-allowed; }
+
+        /* Resultado ruta */
+        .ruta-resultado {
+            margin-top: 10px;
+            padding: 10px;
+            background: #2d3748;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            display: none;
+        }
+        .ruta-resultado.visible { display: block; }
+        .ruta-paso {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 0;
+        }
+        .ruta-paso::before {
+            content: '→';
+            color: #63b3ed;
+        }
+        .ruta-paso:first-child::before { content: '📍'; }
+        .ruta-paso:last-child::before  { content: '🏁'; }
+        .ruta-costo {
+            margin-top: 8px;
+            color: #68d391;
+            font-weight: 600;
+        }
+
+        /* Alerta ESP32 */
+        .alerta-box {
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            background: #2d3748;
+            margin-top: 8px;
+        }
+        .alerta-ordeno {
+            background: #742a2a;
+            color: #feb2b2;
+            animation: pulso 1s infinite;
+        }
+        @keyframes pulso {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.6; }
+        }
+
+        /* ── MAPA ── */
+        #mapa { flex: 1; }
+
+        /* Leyenda del mapa */
+        .leyenda {
+            background: #1a1d2e;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            color: #e2e8f0;
+        }
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+        }
+        .leyenda-color {
+            width: 14px; height: 14px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🚛 Sistema de Peligrosidad para Transportistas</h1>
+    <span class="badge badge-live">● EN VIVO</span>
+</header>
+
+<div class="layout">
+
+    <!-- ── PANEL IZQUIERDO ── -->
+    <div class="panel">
+
+        <!-- Niveles de peligro -->
+        <div class="panel-section">
+            <h2>Zonas de Riesgo</h2>
+            <div id="lista-estados">Cargando...</div>
+        </div>
+
+        <!-- Calculadora de rutas -->
+        <div class="panel-section">
+            <h2>Calcular Ruta</h2>
+            <select id="origen">
+                <option value="">Origen...</option>
+            </select>
+            <select id="destino">
+                <option value="">Destino...</option>
+            </select>
+            <select id="algoritmo">
+                <option value="a_estrella">A* (recomendado)</option>
+                <option value="ucs">Costo Uniforme</option>
+                <option value="manhattan">Manhattan</option>
+                <option value="genetico">Genético</option>
+            </select>
+            <button id="btn-calcular" onclick="calcularRuta()">
+                Calcular Ruta
+            </button>
+            <div class="ruta-resultado" id="ruta-resultado"></div>
+        </div>
+
+        <!-- Simulador ESP32 -->
+        <div class="panel-section">
+            <h2>Simulador ESP32</h2>
+            <input type="number" id="sim-lat" placeholder="Latitud (ej: 19.43)"
+                   value="19.3590" step="0.001"/>
+            <input type="number" id="sim-lon" placeholder="Longitud (ej: -99.13)"
+                   value="-99.6520" step="0.001"/>
+            <input type="number" id="sim-combustible" placeholder="Nivel combustible (cm)"
+                   value="18.5" step="0.1"/>
+            <button onclick="enviarPing()">Enviar Ping GPS</button>
+            <div class="alerta-box" id="alerta-box">
+                Esperando señal del dispositivo...
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── MAPA ── -->
+    <div id="mapa"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const API = 'http://127.0.0.1:8000';
+
+// ── COORDENADAS DE ESTADOS ──
+const COORDS = {
+    "Estado de México":  [19.3590, -99.6520],
+    "Jalisco":           [20.6595, -103.3494],
+    "Nuevo León":        [25.5922, -99.9962],
+    "Guerrero":          [17.4392, -100.0000],
+    "Puebla":            [19.0414, -98.2063],
+    "Chihuahua":         [28.6353, -106.0889],
+    "Guanajuato":        [21.0190, -101.2574],
+    "CDMX":              [19.4326, -99.1332],
+    "Veracruz":          [19.1738, -96.1342],
+    "Oaxaca":            [17.0732, -96.7266],
+    "Tamaulipas":        [23.7369, -99.1411],
+    "Sonora":            [29.0892, -110.9613],
+    "Sinaloa":           [24.8091, -107.3940],
+    "Zacatecas":         [22.7709, -102.5832],
+    "Querétaro":         [20.5888, -100.3899],
+    "San Luis Potosí":   [22.1565, -100.9855],
+    "Hidalgo":           [20.0911, -98.7624],
+    "Morelos":           [18.6813, -99.1013],
+    "Michoacán":         [19.5665, -101.7068],
+    "Aguascalientes":    [21.8853, -102.2916],
+};
+
+const COLORES = {
+    "Bajo":    "#276749",
+    "Medio":   "#b7791f",
+    "Alto":    "#c53030",
+    "Crítico": "#702459",
+};
+
+// ── INICIALIZAR MAPA ──
+const mapa = L.map('mapa').setView([23.0, -102.0], 5);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    className: 'mapa-oscuro'
+}).addTo(mapa);
+
+// Estilo oscuro al tile
+const style = document.createElement('style');
+style.innerHTML = `.mapa-oscuro { filter: invert(1) hue-rotate(180deg) brightness(0.85); }`;
+document.head.appendChild(style);
+
+// Leyenda
+const leyenda = L.control({ position: 'bottomright' });
+leyenda.onAdd = () => {
+    const div = L.DomUtil.create('div', 'leyenda');
+    div.innerHTML = `
+        <b style="font-size:0.8rem">Nivel de Peligro</b>
+        ${Object.entries(COLORES).map(([n, c]) =>
+            `<div class="leyenda-item">
+                <div class="leyenda-color" style="background:${c}"></div>${n}
+             </div>`
+        ).join('')}`;
+    return div;
+};
+leyenda.addTo(mapa);
+
+let marcadores = {};
+let marcadorTransportista = null;
+let polylineRuta = null;
+
+// ── CARGAR ZONAS DE RIESGO ──
+async function cargarPeligrosidad() {
+    const res  = await fetch(`${API}/peligrosidad/`);
+    const data = await res.json();
+    const lista = document.getElementById('lista-estados');
+    lista.innerHTML = '';
+
+    // Limpiar marcadores anteriores
+    Object.values(marcadores).forEach(m => mapa.removeLayer(m));
+    marcadores = {};
+
+    data.forEach(item => {
+        const nombre = item.estado.nombre;
+        const nivel  = item.nivel;
+        const color  = COLORES[nivel] || '#4a5568';
+        const coords = COORDS[nombre];
+
+        // Panel
+        lista.innerHTML += `
+            <div class="estado-item" onclick="centrarEstado('${nombre}')">
+                <span class="estado-nombre">${nombre}</span>
+                <span class="nivel-badge nivel-${nivel}">${nivel}</span>
+            </div>`;
+
+        // Marcador en mapa
+        if (coords) {
+            const circulo = L.circle(coords, {
+                color,
+                fillColor: color,
+                fillOpacity: 0.4,
+                radius: 80000,
+            }).addTo(mapa);
+
+            circulo.bindPopup(`
+                <b>${nombre}</b><br>
+                Nivel: <b style="color:${color}">${nivel}</b><br>
+                Índice: ${item.indice_peligrosidad}<br>
+                Incidentes: ${item.total_incidentes}
+            `);
+
+            marcadores[nombre] = circulo;
+        }
+    });
+
+    // Cargar selects de ruta
+    const resEstados = await fetch(`${API}/rutas/estados-disponibles`);
+    const dataEstados = await resEstados.json();
+    ['origen','destino'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = `<option value="">Selecciona...</option>`;
+        dataEstados.estados.forEach(e => {
+            sel.innerHTML += `<option value="${e}">${e}</option>`;
+        });
+    });
+}
+
+function centrarEstado(nombre) {
+    const coords = COORDS[nombre];
+    if (coords) {
+        mapa.flyTo(coords, 7);
+        marcadores[nombre]?.openPopup();
+    }
+}
+
+// ── CALCULAR RUTA ──
+async function calcularRuta() {
+    const origen    = document.getElementById('origen').value;
+    const destino   = document.getElementById('destino').value;
+    const algoritmo = document.getElementById('algoritmo').value;
+    const btn       = document.getElementById('btn-calcular');
+    const resultado = document.getElementById('ruta-resultado');
+
+    if (!origen || !destino) {
+        alert('Selecciona origen y destino');
+        return;
+    }
+    if (origen === destino) {
+        alert('Origen y destino deben ser diferentes');
+        return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Calculando...';
+
+    try {
+        const res  = await fetch(`${API}/rutas/calcular`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ origen, destino, algoritmo }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            resultado.className = 'ruta-resultado visible';
+            resultado.innerHTML = `<span style="color:#fc8181">❌ ${data.detail}</span>`;
+            return;
+        }
+
+        // Mostrar ruta en panel
+        resultado.className = 'ruta-resultado visible';
+        resultado.innerHTML = data.ruta
+            .map(e => `<div class="ruta-paso">${e}</div>`)
+            .join('') +
+            `<div class="ruta-costo">
+                📏 ${data.costo_total} km &nbsp;|&nbsp; ${data.pasos} tramos
+             </div>`;
+
+        // Dibujar ruta en mapa
+        if (polylineRuta) mapa.removeLayer(polylineRuta);
+        const puntos = data.ruta
+            .filter(e => COORDS[e])
+            .map(e => COORDS[e]);
+
+        if (puntos.length >= 2) {
+            polylineRuta = L.polyline(puntos, {
+                color: '#63b3ed',
+                weight: 4,
+                dashArray: '8 4',
+            }).addTo(mapa);
+            mapa.fitBounds(polylineRuta.getBounds(), { padding: [40, 40] });
+        }
+
+    } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Calcular Ruta';
+    }
+}
+
+// ── SIMULADOR ESP32 ──
+async function enviarPing() {
+    const lat         = parseFloat(document.getElementById('sim-lat').value);
+    const lon         = parseFloat(document.getElementById('sim-lon').value);
+    const combustible = parseFloat(document.getElementById('sim-combustible').value);
+    const alertaBox   = document.getElementById('alerta-box');
+
+    alertaBox.className = 'alerta-box';
+    alertaBox.textContent = 'Enviando...';
+
+    const res  = await fetch(`${API}/rutas/ping-gps`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+            latitud:           lat,
+            longitud:          lon,
+            nivel_combustible: combustible,
+            velocidad:         65.0,
+        }),
+    });
+    const data = await res.json();
+
+    // Actualizar marcador transportista
+    if (marcadorTransportista) mapa.removeLayer(marcadorTransportista);
+    marcadorTransportista = L.marker([lat, lon], {
+        icon: L.divIcon({
+            className: '',
+            html: `<div style="font-size:1.8rem">🚛</div>`,
+            iconSize: [32, 32],
+        })
+    }).addTo(mapa);
+    marcadorTransportista.bindPopup(`
+        <b>Transportista</b><br>
+        Estado: ${data.estado}<br>
+        Nivel peligro: <b>${data.nivel_peligro}</b><br>
+        Combustible: ${combustible} cm
+    `).openPopup();
+    mapa.flyTo([lat, lon], 7);
+
+    // Alerta
+    if (data.alerta_ordeno) {
+        alertaBox.className = 'alerta-box alerta-ordeno';
+        alertaBox.textContent = '⚠️ ' + data.mensaje;
+    } else {
+        alertaBox.className = 'alerta-box';
+        alertaBox.innerHTML = `
+            ✅ <b>${data.estado}</b><br>
+            Nivel: <b>${data.nivel_peligro}</b><br>
+            Combustible normal`;
+    }
+}
+
+// ── INICIAR ──
+cargarPeligrosidad();
+</script>
+</body>
+</html>
