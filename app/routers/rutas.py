@@ -34,18 +34,20 @@ GRAFO_MEXICO = {
     },
     "Nuevo León": {
         "Tamaulipas": 220, "San Luis Potosí": 380,
-        "Zacatecas": 470, "Chihuahua": 790
+        "Zacatecas": 470, "Chihuahua": 790, "Sonora": 1100,
+        "Coahuila": 230
     },
     "Guerrero": {
-        "Morelos": 190, "Puebla": 270, "Oaxaca": 360, "Michoacán": 280
+        "Morelos": 190, "Puebla": 270,
+        "Oaxaca": 360, "Michoacán": 280
     },
     "Puebla": {
         "Estado de México": 130, "CDMX": 120, "Guerrero": 270,
-        "Oaxaca": 330, "Veracruz": 210, "Morelos": 120
+        "Oaxaca": 330, "Veracruz": 210, "Morelos": 120, "Hidalgo": 180
     },
     "Chihuahua": {
         "Sonora": 600, "Sinaloa": 570,
-        "Zacatecas": 720, "Nuevo León": 790
+        "Zacatecas": 720, "Nuevo León": 790, "Coahuila": 500
     },
     "Guanajuato": {
         "Jalisco": 170, "Querétaro": 110,
@@ -53,7 +55,7 @@ GRAFO_MEXICO = {
     },
     "Hidalgo": {
         "Estado de México": 120, "CDMX": 130,
-        "Querétaro": 140, "Veracruz": 280
+        "Querétaro": 140, "Veracruz": 280, "Puebla": 180
     },
     "Morelos": {
         "CDMX": 85, "Estado de México": 90,
@@ -61,10 +63,11 @@ GRAFO_MEXICO = {
     },
     "Michoacán": {
         "Jalisco": 220, "Guanajuato": 150,
-        "Estado de México": 200, "Guerrero": 280
+        "Estado de México": 200, "Guerrero": 280, "Colima": 180
     },
     "Oaxaca": {
-        "Puebla": 330, "Guerrero": 360, "Veracruz": 340
+        "Puebla": 330, "Guerrero": 360,
+        "Veracruz": 340, "Chiapas": 240
     },
     "Querétaro": {
         "Estado de México": 180, "Hidalgo": 140,
@@ -72,27 +75,73 @@ GRAFO_MEXICO = {
     },
     "San Luis Potosí": {
         "Querétaro": 200, "Guanajuato": 200,
-        "Zacatecas": 190, "Nuevo León": 380, "Tamaulipas": 430
+        "Zacatecas": 190, "Nuevo León": 380,
+        "Tamaulipas": 430, "Hidalgo": 280
     },
     "Sinaloa": {
-        "Sonora": 420, "Chihuahua": 570, "Jalisco": 580, "Zacatecas": 530
+        "Sonora": 420, "Chihuahua": 570,
+        "Jalisco": 580, "Zacatecas": 530, "Nayarit": 280
     },
     "Sonora": {
-        "Chihuahua": 600, "Sinaloa": 420
+        "Chihuahua": 600, "Sinaloa": 420,
+        "Nuevo León": 1100, "Baja California": 750
     },
     "Tamaulipas": {
-        "Nuevo León": 220, "San Luis Potosí": 430, "Veracruz": 520
+        "Nuevo León": 220, "San Luis Potosí": 430,
+        "Veracruz": 520, "Coahuila": 400
     },
     "Veracruz": {
         "Puebla": 210, "Oaxaca": 340,
-        "Hidalgo": 280, "Tamaulipas": 520
+        "Hidalgo": 280, "Tamaulipas": 520,
+        "Tabasco": 350, "Chiapas": 480
     },
     "Zacatecas": {
         "Jalisco": 290, "San Luis Potosí": 190,
-        "Aguascalientes": 120, "Chihuahua": 720, "Nuevo León": 470
+        "Aguascalientes": 120, "Chihuahua": 720,
+        "Nuevo León": 470, "Durango": 310, "Coahuila": 420
     },
     "Aguascalientes": {
         "Jalisco": 110, "Guanajuato": 100, "Zacatecas": 120
+    },
+    "Coahuila": {
+        "Nuevo León": 230, "Chihuahua": 500,
+        "Zacatecas": 420, "Tamaulipas": 400, "Durango": 560
+    },
+    "Durango": {
+        "Zacatecas": 310, "Sinaloa": 320,
+        "Chihuahua": 480, "Coahuila": 560, "Nayarit": 330
+    },
+    "Nayarit": {
+        "Jalisco": 190, "Sinaloa": 280, "Durango": 330
+    },
+    "Colima": {
+        "Jalisco": 130, "Michoacán": 180
+    },
+    "Tabasco": {
+        "Veracruz": 350, "Chiapas": 230, "Campeche": 280
+    },
+    "Chiapas": {
+        "Oaxaca": 240, "Veracruz": 480,
+        "Tabasco": 230, "Campeche": 420
+    },
+    "Campeche": {
+        "Tabasco": 280, "Chiapas": 420,
+        "Yucatán": 160, "Quintana Roo": 320
+    },
+    "Yucatán": {
+        "Campeche": 160, "Quintana Roo": 320
+    },
+    "Quintana Roo": {
+        "Yucatán": 320, "Campeche": 320
+    },
+    "Baja California": {
+        "Sonora": 750, "Baja California Sur": 680
+    },
+    "Baja California Sur": {
+        "Baja California": 680
+    },
+    "Tlaxcala": {
+        "Puebla": 30, "Hidalgo": 120, "Estado de México": 150
     },
 }
 

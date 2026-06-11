@@ -22,15 +22,11 @@
             padding: 12px 24px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             border-bottom: 2px solid #2d3748;
+            flex-wrap: wrap;
         }
-
-        header h1 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #63b3ed;
-        }
+        header h1 { font-size: 1rem; font-weight: 600; color: #63b3ed; }
 
         .badge {
             padding: 3px 10px;
@@ -39,156 +35,209 @@
             font-weight: 700;
         }
         .badge-live { background: #22543d; color: #68d391; }
+        .badge-modo { background: #2a4365; color: #90cdf4; }
 
-        .layout {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
+        .layout { display: flex; flex: 1; overflow: hidden; }
 
-        /* ── PANEL IZQUIERDO ── */
+        /* ── PANEL ── */
         .panel {
-            width: 340px;
+            width: 320px;
             background: #1a1d2e;
             border-right: 1px solid #2d3748;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
         }
-
         .panel-section {
-            padding: 16px;
+            padding: 14px 16px;
             border-bottom: 1px solid #2d3748;
         }
-
         .panel-section h2 {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: #718096;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        /* Niveles de peligro */
-        .estado-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 10px;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            background: #2d3748;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .estado-item:hover { background: #3a4a5c; }
-        .estado-nombre { font-size: 0.85rem; }
-
-        .nivel-badge {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 700;
-        }
-        .nivel-Bajo     { background: #276749; color: #9ae6b4; }
-        .nivel-Medio    { background: #744210; color: #fbd38d; }
-        .nivel-Alto     { background: #742a2a; color: #feb2b2; }
-        .nivel-Crítico  { background: #521b41; color: #fbb6ce; }
-
-        /* Calculadora de rutas */
-        select, input {
-            width: 100%;
-            padding: 8px 10px;
-            background: #2d3748;
-            border: 1px solid #4a5568;
-            border-radius: 6px;
-            color: #e2e8f0;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #3182ce;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: background 0.2s;
-        }
-        button:hover { background: #2b6cb0; }
-        button:disabled { background: #4a5568; cursor: not-allowed; }
-
-        /* Resultado ruta */
-        .ruta-resultado {
-            margin-top: 10px;
-            padding: 10px;
-            background: #2d3748;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            display: none;
-        }
-        .ruta-resultado.visible { display: block; }
-        .ruta-paso {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 3px 0;
-        }
-        .ruta-paso::before {
-            content: '→';
-            color: #63b3ed;
-        }
-        .ruta-paso:first-child::before { content: '📍'; }
-        .ruta-paso:last-child::before  { content: '🏁'; }
-        .ruta-costo {
-            margin-top: 8px;
-            color: #68d391;
-            font-weight: 600;
-        }
-
-        /* Alerta ESP32 */
-        .alerta-box {
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            background: #2d3748;
-            margin-top: 8px;
-        }
-        .alerta-ordeno {
-            background: #742a2a;
-            color: #feb2b2;
-            animation: pulso 1s infinite;
-        }
-        @keyframes pulso {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.6; }
-        }
-
-        /* ── MAPA ── */
-        #mapa { flex: 1; }
-
-        /* Leyenda del mapa */
-        .leyenda {
-            background: #1a1d2e;
-            border: 1px solid #2d3748;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 0.75rem;
-            color: #e2e8f0;
-        }
-        .leyenda-item {
+        /* Pins */
+        .pin-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin: 4px 0;
+            padding: 8px 10px;
+            background: #2d3748;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 0.82rem;
         }
-        .leyenda-color {
-            width: 14px; height: 14px;
-            border-radius: 3px;
+        .pin-numero {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: #3182ce;
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .pin-info { flex: 1; min-width: 0; }
+        .pin-lugar {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pin-estado-nombre { font-size: 0.72rem; color: #a0aec0; }
+        .pin-nivel { font-size: 0.72rem; }
+        .pin-borrar {
+            background: none; border: none;
+            color: #fc8181; cursor: pointer;
+            font-size: 1rem; width: auto; padding: 0 4px;
+            flex-shrink: 0;
+        }
+
+        .hint {
+            font-size: 0.78rem; color: #718096;
+            text-align: center; padding: 8px;
+        }
+
+        /* Cargando pin */
+        .pin-cargando {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px;
+            background: #2d3748;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 0.82rem;
+            color: #718096;
+            animation: parpadeo 1s infinite;
+        }
+        @keyframes parpadeo { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+        /* Algoritmos */
+        .algo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .algo-btn {
+            padding: 8px 6px;
+            border-radius: 6px;
+            border: 2px solid #4a5568;
+            background: #2d3748;
+            color: #a0aec0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            width: auto;
+        }
+        .algo-btn:hover { border-color: #63b3ed; color: #63b3ed; }
+        .algo-btn.activo {
+            border-color: var(--color);
+            color: var(--color);
+            background: #1a2744;
+        }
+
+        .btn-calcular {
+            width: 100%; padding: 10px;
+            background: #2b6cb0; border: none;
+            border-radius: 6px; color: white;
+            font-weight: 700; cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+            margin-bottom: 6px;
+        }
+        .btn-calcular:hover:not(:disabled) { background: #2c5282; }
+        .btn-calcular:disabled {
+            background: #2d3748; color: #4a5568; cursor: not-allowed;
+        }
+        .btn-limpiar {
+            width: 100%; padding: 8px;
+            background: transparent;
+            border: 1px solid #4a5568;
+            border-radius: 6px; color: #718096;
+            font-size: 0.8rem; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-limpiar:hover { border-color: #fc8181; color: #fc8181; }
+
+        /* Resultados */
+        .resultado-item {
+            padding: 10px; border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--color);
+            background: #2d3748; font-size: 0.8rem;
+        }
+        .resultado-header {
+            display: flex; justify-content: space-between;
+            font-weight: 700; margin-bottom: 6px;
+            color: var(--color);
+        }
+        .resultado-ruta { color: #cbd5e0; line-height: 1.8; }
+        .resultado-costo { margin-top: 6px; color: #68d391; font-weight: 600; }
+
+        /* Zonas */
+        .estado-item {
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 6px 10px;
+            border-radius: 6px; margin-bottom: 5px;
+            background: #2d3748; font-size: 0.82rem;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .estado-item:hover { background: #3a4a5c; }
+        .nivel-badge {
+            padding: 2px 7px; border-radius: 4px;
+            font-size: 0.68rem; font-weight: 700;
+        }
+        .nivel-Bajo    { background: #276749; color: #9ae6b4; }
+        .nivel-Medio   { background: #744210; color: #fbd38d; }
+        .nivel-Alto    { background: #742a2a; color: #feb2b2; }
+        .nivel-Crítico { background: #521b41; color: #fbb6ce; }
+
+        /* ESP32 */
+        .alerta-box {
+            padding: 10px; border-radius: 6px;
+            font-size: 0.8rem; background: #2d3748;
+            margin-top: 8px;
+        }
+        .alerta-ordeno {
+            background: #742a2a; color: #feb2b2;
+            animation: pulso 1s infinite;
+        }
+        @keyframes pulso { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+        input, select {
+            width: 100%; padding: 8px 10px;
+            background: #2d3748; border: 1px solid #4a5568;
+            border-radius: 6px; color: #e2e8f0;
+            font-size: 0.82rem; margin-bottom: 7px;
+        }
+
+        #mapa { flex: 1; cursor: crosshair; }
+
+        .leyenda {
+            background: #1a1d2eee;
+            border: 1px solid #2d3748;
+            border-radius: 8px; padding: 10px 14px;
+            font-size: 0.75rem; color: #e2e8f0;
+        }
+        .leyenda-item {
+            display: flex; align-items: center;
+            gap: 8px; margin: 4px 0;
+        }
+        .leyenda-color { width: 13px; height: 13px; border-radius: 3px; }
+
+        .mapa-tooltip {
+            position: fixed;
+            background: #1a1d2e;
+            border: 1px solid #4a5568;
+            border-radius: 6px; padding: 6px 10px;
+            font-size: 0.75rem; pointer-events: none;
+            z-index: 1000; color: #e2e8f0; display: none;
         }
     </style>
 </head>
@@ -197,66 +246,79 @@
 <header>
     <h1>🚛 Sistema de Peligrosidad para Transportistas</h1>
     <span class="badge badge-live">● EN VIVO</span>
+    <span class="badge badge-modo">🖱️ Click = punto &nbsp;|&nbsp; Shift+Click = ESP32</span>
 </header>
 
 <div class="layout">
-
-    <!-- ── PANEL IZQUIERDO ── -->
     <div class="panel">
 
-        <!-- Niveles de peligro -->
+        <div class="panel-section">
+            <h2>Puntos de Ruta</h2>
+            <div id="lista-pins">
+                <div class="hint">Haz click en el mapa para agregar puntos de origen y destino</div>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h2>Algoritmo</h2>
+            <div class="algo-grid">
+                <div class="algo-btn activo" style="--color:#63b3ed"
+                     data-algo="a_estrella" onclick="seleccionarAlgo(this)">
+                    ⭐ A*
+                </div>
+                <div class="algo-btn" style="--color:#68d391"
+                     data-algo="ucs" onclick="seleccionarAlgo(this)">
+                    💰 Costo Uniforme
+                </div>
+                <div class="algo-btn" style="--color:#f6ad55"
+                     data-algo="manhattan" onclick="seleccionarAlgo(this)">
+                    📐 Manhattan
+                </div>
+                <div class="algo-btn" style="--color:#fc8181"
+                     data-algo="genetico" onclick="seleccionarAlgo(this)">
+                    🧬 Genético
+                </div>
+            </div>
+            <button class="btn-calcular" id="btn-calcular"
+                    onclick="calcularRuta()" disabled>
+                Calcular Ruta
+            </button>
+            <button class="btn-limpiar" onclick="limpiarTodo()">
+                🗑️ Limpiar todo
+            </button>
+        </div>
+
+        <div class="panel-section" id="seccion-resultados" style="display:none">
+            <h2>Resultados</h2>
+            <div id="lista-resultados"></div>
+        </div>
+
         <div class="panel-section">
             <h2>Zonas de Riesgo</h2>
             <div id="lista-estados">Cargando...</div>
         </div>
 
-        <!-- Calculadora de rutas -->
-        <div class="panel-section">
-            <h2>Calcular Ruta</h2>
-            <select id="origen">
-                <option value="">Origen...</option>
-            </select>
-            <select id="destino">
-                <option value="">Destino...</option>
-            </select>
-            <select id="algoritmo">
-                <option value="a_estrella">A* (recomendado)</option>
-                <option value="ucs">Costo Uniforme</option>
-                <option value="manhattan">Manhattan</option>
-                <option value="genetico">Genético</option>
-            </select>
-            <button id="btn-calcular" onclick="calcularRuta()">
-                Calcular Ruta
-            </button>
-            <div class="ruta-resultado" id="ruta-resultado"></div>
-        </div>
-
-        <!-- Simulador ESP32 -->
         <div class="panel-section">
             <h2>Simulador ESP32</h2>
-            <input type="number" id="sim-lat" placeholder="Latitud (ej: 19.43)"
-                   value="19.3590" step="0.001"/>
-            <input type="number" id="sim-lon" placeholder="Longitud (ej: -99.13)"
-                   value="-99.6520" step="0.001"/>
-            <input type="number" id="sim-combustible" placeholder="Nivel combustible (cm)"
-                   value="18.5" step="0.1"/>
-            <button onclick="enviarPing()">Enviar Ping GPS</button>
-            <div class="alerta-box" id="alerta-box">
-                Esperando señal del dispositivo...
+            <input type="number" id="sim-combustible"
+                   placeholder="Nivel combustible (cm)" value="18.5" step="0.1"/>
+            <div class="hint" style="margin-bottom:8px">
+                Shift + Click en el mapa para simular ping GPS
             </div>
+            <div class="alerta-box" id="alerta-box">Esperando señal...</div>
         </div>
 
     </div>
 
-    <!-- ── MAPA ── -->
     <div id="mapa"></div>
 </div>
+
+<div class="mapa-tooltip" id="tooltip"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const API = 'http://127.0.0.1:8000';
 
-// ── COORDENADAS DE ESTADOS ──
 const COORDS = {
     "Estado de México":  [19.3590, -99.6520],
     "Jalisco":           [20.6595, -103.3494],
@@ -280,227 +342,537 @@ const COORDS = {
     "Aguascalientes":    [21.8853, -102.2916],
 };
 
-const COLORES = {
+const COLORES_NIVEL = {
     "Bajo":    "#276749",
     "Medio":   "#b7791f",
     "Alto":    "#c53030",
     "Crítico": "#702459",
 };
 
-// ── INICIALIZAR MAPA ──
-const mapa = L.map('mapa').setView([23.0, -102.0], 5);
+const COLORES_ALGO = {
+    "a_estrella": "#63b3ed",
+    "ucs":        "#68d391",
+    "manhattan":  "#f6ad55",
+    "genetico":   "#fc8181",
+};
 
+let pins           = [];
+let marcadoresZona = {};
+let polylines      = [];
+let marcadorESP    = null;
+let algoActual     = "a_estrella";
+
+// ── MAPA ──
+const mapa = L.map('mapa').setView([23.0, -102.0], 5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap',
-    className: 'mapa-oscuro'
+    className: 'tiles-oscuro'
 }).addTo(mapa);
 
-// Estilo oscuro al tile
-const style = document.createElement('style');
-style.innerHTML = `.mapa-oscuro { filter: invert(1) hue-rotate(180deg) brightness(0.85); }`;
-document.head.appendChild(style);
+const estiloOscuro = document.createElement('style');
+estiloOscuro.innerHTML = `.tiles-oscuro { filter: invert(1) hue-rotate(180deg) brightness(0.85); }`;
+document.head.appendChild(estiloOscuro);
 
-// Leyenda
 const leyenda = L.control({ position: 'bottomright' });
 leyenda.onAdd = () => {
     const div = L.DomUtil.create('div', 'leyenda');
-    div.innerHTML = `
-        <b style="font-size:0.8rem">Nivel de Peligro</b>
-        ${Object.entries(COLORES).map(([n, c]) =>
+    div.innerHTML = `<b style="font-size:0.78rem;display:block;margin-bottom:4px">Nivel de Peligro</b>` +
+        Object.entries(COLORES_NIVEL).map(([n, c]) =>
             `<div class="leyenda-item">
                 <div class="leyenda-color" style="background:${c}"></div>${n}
              </div>`
-        ).join('')}`;
+        ).join('');
     return div;
 };
 leyenda.addTo(mapa);
 
-let marcadores = {};
-let marcadorTransportista = null;
-let polylineRuta = null;
+// Tooltip coordenadas
+const tooltip = document.getElementById('tooltip');
+mapa.on('mousemove', (e) => {
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.originalEvent.clientX + 12) + 'px';
+    tooltip.style.top  = (e.originalEvent.clientY + 12) + 'px';
+    tooltip.textContent = `${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
+});
+mapa.on('mouseout', () => { tooltip.style.display = 'none'; });
 
-// ── CARGAR ZONAS DE RIESGO ──
-async function cargarPeligrosidad() {
-    const res  = await fetch(`${API}/peligrosidad/`);
-    const data = await res.json();
-    const lista = document.getElementById('lista-estados');
-    lista.innerHTML = '';
+mapa.on('click', async (e) => {
+    const { lat, lng } = e.latlng;
+    if (e.originalEvent.shiftKey) {
+        await enviarPingGPS(lat, lng);
+    } else {
+        await agregarPin(lat, lng);
+    }
+});
 
-    // Limpiar marcadores anteriores
-    Object.values(marcadores).forEach(m => mapa.removeLayer(m));
-    marcadores = {};
+// ── GEOCODIFICACIÓN INVERSA ──
+async function obtenerNombreLugar(lat, lng) {
+    try {
+        const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=es`,
+            { headers: { 'User-Agent': 'SistemaTransportistas/1.0' } }
+        );
+        const data = await res.json();
+        const addr = data.address || {};
 
-    data.forEach(item => {
-        const nombre = item.estado.nombre;
-        const nivel  = item.nivel;
-        const color  = COLORES[nivel] || '#4a5568';
-        const coords = COORDS[nombre];
+        const lugar =
+            addr.city         ||
+            addr.town         ||
+            addr.village      ||
+            addr.municipality ||
+            addr.county       ||
+            addr.state        ||
+            'Lugar desconocido';
 
-        // Panel
-        lista.innerHTML += `
-            <div class="estado-item" onclick="centrarEstado('${nombre}')">
-                <span class="estado-nombre">${nombre}</span>
-                <span class="nivel-badge nivel-${nivel}">${nivel}</span>
-            </div>`;
+        const estado = addr.state || '';
+        return {
+            lugar,
+            estado,
+            nombreCompleto: estado ? `${lugar}, ${estado}` : lugar,
+        };
+    } catch (e) {
+        return { lugar: 'Desconocido', estado: '', nombreCompleto: 'Desconocido' };
+    }
+}
 
-        // Marcador en mapa
-        if (coords) {
-            const circulo = L.circle(coords, {
-                color,
-                fillColor: color,
-                fillOpacity: 0.4,
-                radius: 80000,
-            }).addTo(mapa);
+// ── AGREGAR PIN ──
+async function agregarPin(lat, lng) {
+    const numero = pins.length + 1;
 
-            circulo.bindPopup(`
-                <b>${nombre}</b><br>
-                Nivel: <b style="color:${color}">${nivel}</b><br>
-                Índice: ${item.indice_peligrosidad}<br>
-                Incidentes: ${item.total_incidentes}
-            `);
+    // Mostrar pin "cargando" inmediatamente
+    const lista = document.getElementById('lista-pins');
+    const tempId = `cargando-${numero}`;
+    const tempDiv = document.createElement('div');
+    tempDiv.className = 'pin-cargando';
+    tempDiv.id = tempId;
+    tempDiv.innerHTML = `
+        <div class="pin-numero">${numero}</div>
+        <span>Detectando ubicación...</span>`;
 
-            marcadores[nombre] = circulo;
+    if (lista.querySelector('.hint')) lista.innerHTML = '';
+    lista.appendChild(tempDiv);
+
+    // Pin temporal en mapa
+    const iconTemp = L.divIcon({
+        className: '',
+        html: `<div style="width:24px;height:24px;border-radius:50%;
+                background:#4a5568;border:2px solid white;
+                display:flex;align-items:center;justify-content:center;
+                color:white;font-weight:700;font-size:0.75rem">
+                ${numero}</div>`,
+        iconSize: [24, 24], iconAnchor: [12, 12],
+    });
+    const markerTemp = L.marker([lat, lng], { icon: iconTemp }).addTo(mapa);
+
+    // Consultar Nominatim y API en paralelo
+    const [lugarInfo, pingData] = await Promise.all([
+        obtenerNombreLugar(lat, lng),
+        fetch(`${API}/rutas/ping-gps`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                latitud: lat, longitud: lng,
+                nivel_combustible: 20, velocidad: 0
+            }),
+        }).then(r => r.json()).catch(() => ({
+            estado: 'Desconocido', nivel_peligro: 'Sin datos'
+        }))
+    ]);
+
+    const estadoNombre = pingData.estado        || lugarInfo.estado || 'Desconocido';
+    const nivelPeligro = pingData.nivel_peligro || 'Sin datos';
+    const colorNivel   = COLORES_NIVEL[nivelPeligro] || '#4a5568';
+
+    // Reemplazar marcador temporal con el definitivo
+    mapa.removeLayer(markerTemp);
+    const iconFinal = L.divIcon({
+        className: '',
+        html: `<div style="
+            width:28px;height:28px;border-radius:50% 50% 50% 0;
+            background:${colorNivel};border:2px solid white;
+            display:flex;align-items:center;justify-content:center;
+            color:white;font-weight:700;font-size:0.8rem;
+            transform:rotate(-45deg);box-shadow:0 2px 6px rgba(0,0,0,0.5)">
+            <span style="transform:rotate(45deg)">${numero}</span>
+        </div>`,
+        iconSize: [28, 28], iconAnchor: [14, 28],
+    });
+
+    const marker = L.marker([lat, lng], { icon: iconFinal }).addTo(mapa);
+    marker.bindPopup(`
+        <b>Punto ${numero}</b><br>
+        📍 <b>${lugarInfo.lugar}</b><br>
+        🗺️ ${estadoNombre}<br>
+        <span style="color:${colorNivel}">● ${nivelPeligro}</span>
+    `).openPopup();
+
+    const pin = {
+        lat, lng,
+        lugar:         lugarInfo.lugar,
+        nombreCompleto: lugarInfo.nombreCompleto,
+        estado:        estadoNombre,
+        nivelPeligro,
+        marker,
+        numero,
+    };
+    pins.push(pin);
+
+    // Quitar el div de cargando y redibujar panel
+    document.getElementById(tempId)?.remove();
+    actualizarPanelPins();
+    actualizarBtnCalcular();
+}
+
+// ── PANEL PINS ──
+function actualizarPanelPins() {
+    const lista = document.getElementById('lista-pins');
+    if (pins.length === 0) {
+        lista.innerHTML = '<div class="hint">Haz click en el mapa para agregar puntos</div>';
+        return;
+    }
+    lista.innerHTML = pins.map((p, i) => `
+        <div class="pin-item">
+            <div class="pin-numero">${p.numero}</div>
+            <div class="pin-info">
+                <div class="pin-lugar">${p.lugar}</div>
+                <div class="pin-estado-nombre">${p.estado}</div>
+                <div class="pin-nivel" style="color:${COLORES_NIVEL[p.nivelPeligro] || '#718096'}">
+                    ● ${p.nivelPeligro}
+                </div>
+            </div>
+            <button class="pin-borrar" onclick="borrarPin(${i})">✕</button>
+        </div>
+    `).join('');
+}
+
+function borrarPin(idx) {
+    mapa.removeLayer(pins[idx].marker);
+    pins.splice(idx, 1);
+    pins.forEach((p, i) => { p.numero = i + 1; });
+    actualizarPanelPins();
+    actualizarBtnCalcular();
+}
+
+// ── ALGORITMO ──
+function seleccionarAlgo(el) {
+    document.querySelectorAll('.algo-btn').forEach(b => b.classList.remove('activo'));
+    el.classList.add('activo');
+    algoActual = el.dataset.algo;
+    actualizarBtnCalcular();
+}
+
+function actualizarBtnCalcular() {
+    const btn = document.getElementById('btn-calcular');
+    const nombres = { a_estrella:'⭐ A*', ucs:'💰 Costo Uniforme',
+                      manhattan:'📐 Manhattan', genetico:'🧬 Genético' };
+    btn.disabled = pins.length < 2;
+    btn.textContent = pins.length < 2
+        ? `Agrega ${2 - pins.length} punto${pins.length === 1 ? '' : 's'} más`
+        : `Calcular con ${nombres[algoActual]}`;
+}
+
+// ── DISTANCIA LINEAL (fallback) ──
+function calcularDistanciaLineal(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+}
+
+// ── CALCULAR RUTA ──
+async function calcularRuta() {
+    // ... tu código
+}
+
+// ── CALCULAR RUTA ──
+async function calcularRuta() {
+    if (pins.length < 2) return;
+    const btn = document.getElementById('btn-calcular');
+    btn.disabled = true;
+    btn.textContent = 'Calculando...';
+
+    const color = COLORES_ALGO[algoActual];
+    let errorEncontrado = null;
+
+    // Limpiar polylines anteriores
+    polylines.forEach(p => mapa.removeLayer(p));
+    polylines = [];
+    document.getElementById('lista-resultados').innerHTML = '';
+    document.getElementById('seccion-resultados').style.display = 'none';
+
+    let rutaCompleta    = [];
+    let costoTotal      = 0;
+    // Puntos reales para dibujar — empezamos con el primer pin exacto
+    let puntosPolyline  = [[pins[0].lat, pins[0].lng]];
+
+    for (let i = 0; i < pins.length - 1; i++) {
+        const pinOrigen  = pins[i];
+        const pinDestino = pins[i + 1];
+        const origen     = pinOrigen.estado;
+        const destino    = pinDestino.estado;
+
+        // Si son el mismo estado, línea directa entre los dos pins
+        // Si son el mismo estado, calcular distancia real con OSRM
+        if (origen === destino) {
+            try {
+                const osrmRes = await fetch(
+                    `https://router.project-osrm.org/route/v1/driving/${pinOrigen.lng},${pinOrigen.lat};${pinDestino.lng},${pinDestino.lat}?overview=full&geometries=geojson`
+                );
+                const osrmData = await osrmRes.json();
+
+                if (osrmData.code === 'Ok') {
+                    const ruta   = osrmData.routes[0];
+                    const kmReal = (ruta.distance / 1000).toFixed(1);
+
+                    // Dibujar la ruta real de OSRM
+                    const coordsRuta = ruta.geometry.coordinates.map(c => [c[1], c[0]]);
+                    puntosPolyline.push(...coordsRuta);
+
+                    costoTotal += parseFloat(kmReal);
+                    rutaCompleta = rutaCompleta.length === 0
+                        ? [origen]
+                        : rutaCompleta;
+                    rutaCompleta.push(`${destino} (+${kmReal} km por carretera)`);
+                } else {
+                    // Fallback: línea recta con distancia aproximada
+                    puntosPolyline.push([pinDestino.lat, pinDestino.lng]);
+                    const distLineal = calcularDistanciaLineal(
+                        pinOrigen.lat, pinOrigen.lng,
+                        pinDestino.lat, pinDestino.lng
+                    );
+                    costoTotal += distLineal;
+                    rutaCompleta.push(`${destino} (~${distLineal} km)`);
+                }
+            } catch(e) {
+                puntosPolyline.push([pinDestino.lat, pinDestino.lng]);
+            }
+            continue;
         }
-    });
 
-    // Cargar selects de ruta
-    const resEstados = await fetch(`${API}/rutas/estados-disponibles`);
-    const dataEstados = await resEstados.json();
-    ['origen','destino'].forEach(id => {
-        const sel = document.getElementById(id);
-        sel.innerHTML = `<option value="">Selecciona...</option>`;
-        dataEstados.estados.forEach(e => {
-            sel.innerHTML += `<option value="${e}">${e}</option>`;
+        try {
+            const res  = await fetch(`${API}/rutas/calcular`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ origen, destino, algoritmo: algoActual }),
+            });
+            const data = await res.json();
+
+            if (!res.ok) { errorEncontrado = data.detail; break; }
+
+            // Estados intermedios usan centroides
+            const estadosIntermedios = data.ruta.slice(1, -1); // sin origen ni destino
+            estadosIntermedios.forEach(estado => {
+                if (COORDS[estado]) puntosPolyline.push(COORDS[estado]);
+            });
+
+            // El último punto es el pin exacto de destino
+            puntosPolyline.push([pinDestino.lat, pinDestino.lng]);
+
+            rutaCompleta = rutaCompleta.length === 0
+                ? data.ruta
+                : [...rutaCompleta, ...data.ruta.slice(1)];
+            costoTotal += data.costo_total;
+
+        } catch(e) {
+            errorEncontrado = 'Error de conexión';
+            break;
+        }
+    }
+
+    if (errorEncontrado) {
+        mostrarResultado(algoActual, null, errorEncontrado, color);
+    } else {
+        // Dibujar polyline con puntos reales + centroides intermedios
+        if (puntosPolyline.length >= 2) {
+            const poly = L.polyline(puntosPolyline, {
+                color, weight: 4, opacity: 0.9,
+                dashArray: algoActual === 'genetico' ? '4 8' : null,
+            }).addTo(mapa);
+            polylines.push(poly);
+            mapa.fitBounds(poly.getBounds(), { padding: [60, 60] });
+
+            // Marcar estados intermedios
+            rutaCompleta.forEach((estado, idx) => {
+                if (idx === 0 || idx === rutaCompleta.length - 1) return;
+                if (!COORDS[estado]) return;
+                const m = L.circleMarker(COORDS[estado], {
+                    radius: 5, color, fillColor: color,
+                    fillOpacity: 1, weight: 2,
+                }).addTo(mapa);
+                m.bindTooltip(estado, { permanent: false });
+                polylines.push(m);
+            });
+        }
+
+        mostrarResultado(algoActual, {
+            ruta: rutaCompleta,
+            costo_total: costoTotal,
+            pasos: rutaCompleta.length - 1,
+        }, null, color);
+    }
+
+    btn.disabled = false;
+    actualizarBtnCalcular();
+}
+
+function mostrarResultado(algo, data, error, color) {
+    const seccion = document.getElementById('seccion-resultados');
+    const lista   = document.getElementById('lista-resultados');
+    seccion.style.display = 'block';
+
+    const nombres = {
+        a_estrella: '⭐ A*', ucs: '💰 Costo Uniforme',
+        manhattan: '📐 Manhattan', genetico: '🧬 Genético',
+    };
+
+    if (error) {
+        lista.innerHTML += `
+            <div class="resultado-item" style="--color:${color}">
+                <div class="resultado-header">
+                    <span>${nombres[algo]}</span>
+                    <span style="color:#fc8181">Error</span>
+                </div>
+                <div style="color:#fc8181">${error}</div>
+            </div>`;
+        return;
+    }
+
+    lista.innerHTML += `
+        <div class="resultado-item" style="--color:${color}">
+            <div class="resultado-header">
+                <span>${nombres[algo]}</span>
+                <span>${data.costo_total} km</span>
+            </div>
+            <div class="resultado-ruta">${data.ruta.join(' → ')}</div>
+            <div class="resultado-costo">
+                📏 ${data.costo_total} km &nbsp;|&nbsp; ${data.pasos} tramos
+            </div>
+        </div>`;
+}
+
+// ── LIMPIAR ──
+function limpiarTodo() {
+    pins.forEach(p => mapa.removeLayer(p.marker));
+    polylines.forEach(p => mapa.removeLayer(p));
+    if (marcadorESP) mapa.removeLayer(marcadorESP);
+    pins = []; polylines = [];
+    document.getElementById('lista-pins').innerHTML =
+        '<div class="hint">Haz click en el mapa para agregar puntos</div>';
+    document.getElementById('lista-resultados').innerHTML = '';
+    document.getElementById('seccion-resultados').style.display = 'none';
+    document.getElementById('alerta-box').className = 'alerta-box';
+    document.getElementById('alerta-box').textContent = 'Esperando señal...';
+    actualizarBtnCalcular();
+}
+
+// ── SIMULADOR ESP32 ──
+async function enviarPingGPS(lat, lng) {
+    const combustible = parseFloat(document.getElementById('sim-combustible').value) || 18.5;
+    const alertaBox   = document.getElementById('alerta-box');
+    alertaBox.className   = 'alerta-box';
+    alertaBox.textContent = '📡 Enviando ping...';
+
+    const [lugarInfo, pingData] = await Promise.all([
+        obtenerNombreLugar(lat, lng),
+        fetch(`${API}/rutas/ping-gps`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                latitud: lat, longitud: lng,
+                nivel_combustible: combustible, velocidad: 65.0,
+            }),
+        }).then(r => r.json()).catch(() => ({
+            estado: 'Desconocido', nivel_peligro: 'Sin datos', alerta_ordeno: false
+        }))
+    ]);
+
+    if (marcadorESP) mapa.removeLayer(marcadorESP);
+    marcadorESP = L.marker([lat, lng], {
+        icon: L.divIcon({
+            className: '',
+            html: `<div style="font-size:1.8rem;filter:drop-shadow(0 2px 4px black)">🚛</div>`,
+            iconSize: [32, 32],
+        })
+    }).addTo(mapa);
+
+    marcadorESP.bindPopup(`
+        <b>🚛 Transportista (ESP32)</b><br>
+        📍 <b>${lugarInfo.lugar}</b><br>
+        🗺️ ${pingData.estado}<br>
+        ⚠️ Nivel: <b>${pingData.nivel_peligro}</b><br>
+        ⛽ Combustible: ${combustible} cm
+    `).openPopup();
+
+    mapa.flyTo([lat, lng], 9);
+
+    if (pingData.alerta_ordeno) {
+        alertaBox.className   = 'alerta-box alerta-ordeno';
+        alertaBox.textContent = '⚠️ ' + pingData.mensaje;
+    } else {
+        alertaBox.className = 'alerta-box';
+        alertaBox.innerHTML = `
+            ✅ <b>${lugarInfo.lugar}</b><br>
+            🗺️ ${pingData.estado} — ${pingData.nivel_peligro}<br>
+            ⛽ Combustible normal`;
+    }
+}
+
+// ── ZONAS DE RIESGO ──
+async function cargarPeligrosidad() {
+    try {
+        const res  = await fetch(`${API}/peligrosidad/`);
+        const data = await res.json();
+        const lista = document.getElementById('lista-estados');
+        lista.innerHTML = '';
+
+        Object.values(marcadoresZona).forEach(m => mapa.removeLayer(m));
+        marcadoresZona = {};
+
+        data.forEach(item => {
+            const nombre = item.estado.nombre;
+            const nivel  = item.nivel;
+            const color  = COLORES_NIVEL[nivel] || '#4a5568';
+            const coords = COORDS[nombre];
+
+            lista.innerHTML += `
+                <div class="estado-item" onclick="centrarEstado('${nombre}')">
+                    <span>${nombre}</span>
+                    <span class="nivel-badge nivel-${nivel}">${nivel}</span>
+                </div>`;
+
+            if (coords) {
+                const circulo = L.circle(coords, {
+                    color, fillColor: color,
+                    fillOpacity: 0.3, radius: 75000, weight: 1,
+                    interactive: false,
+                }).addTo(mapa);
+                circulo.bindPopup(`
+                    <b>${nombre}</b><br>
+                    Nivel: <b style="color:${color}">${nivel}</b><br>
+                    Índice: ${item.indice_peligrosidad}<br>
+                    Incidentes: ${item.total_incidentes}
+                `);
+                marcadoresZona[nombre] = circulo;
+            }
         });
-    });
+    } catch(e) {
+        document.getElementById('lista-estados').textContent = 'Error al cargar';
+    }
 }
 
 function centrarEstado(nombre) {
     const coords = COORDS[nombre];
     if (coords) {
         mapa.flyTo(coords, 7);
-        marcadores[nombre]?.openPopup();
+        marcadoresZona[nombre]?.openPopup();
     }
 }
 
-// ── CALCULAR RUTA ──
-async function calcularRuta() {
-    const origen    = document.getElementById('origen').value;
-    const destino   = document.getElementById('destino').value;
-    const algoritmo = document.getElementById('algoritmo').value;
-    const btn       = document.getElementById('btn-calcular');
-    const resultado = document.getElementById('ruta-resultado');
-
-    if (!origen || !destino) {
-        alert('Selecciona origen y destino');
-        return;
-    }
-    if (origen === destino) {
-        alert('Origen y destino deben ser diferentes');
-        return;
-    }
-
-    btn.disabled    = true;
-    btn.textContent = 'Calculando...';
-
-    try {
-        const res  = await fetch(`${API}/rutas/calcular`, {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ origen, destino, algoritmo }),
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            resultado.className = 'ruta-resultado visible';
-            resultado.innerHTML = `<span style="color:#fc8181">❌ ${data.detail}</span>`;
-            return;
-        }
-
-        // Mostrar ruta en panel
-        resultado.className = 'ruta-resultado visible';
-        resultado.innerHTML = data.ruta
-            .map(e => `<div class="ruta-paso">${e}</div>`)
-            .join('') +
-            `<div class="ruta-costo">
-                📏 ${data.costo_total} km &nbsp;|&nbsp; ${data.pasos} tramos
-             </div>`;
-
-        // Dibujar ruta en mapa
-        if (polylineRuta) mapa.removeLayer(polylineRuta);
-        const puntos = data.ruta
-            .filter(e => COORDS[e])
-            .map(e => COORDS[e]);
-
-        if (puntos.length >= 2) {
-            polylineRuta = L.polyline(puntos, {
-                color: '#63b3ed',
-                weight: 4,
-                dashArray: '8 4',
-            }).addTo(mapa);
-            mapa.fitBounds(polylineRuta.getBounds(), { padding: [40, 40] });
-        }
-
-    } finally {
-        btn.disabled    = false;
-        btn.textContent = 'Calcular Ruta';
-    }
-}
-
-// ── SIMULADOR ESP32 ──
-async function enviarPing() {
-    const lat         = parseFloat(document.getElementById('sim-lat').value);
-    const lon         = parseFloat(document.getElementById('sim-lon').value);
-    const combustible = parseFloat(document.getElementById('sim-combustible').value);
-    const alertaBox   = document.getElementById('alerta-box');
-
-    alertaBox.className = 'alerta-box';
-    alertaBox.textContent = 'Enviando...';
-
-    const res  = await fetch(`${API}/rutas/ping-gps`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-            latitud:           lat,
-            longitud:          lon,
-            nivel_combustible: combustible,
-            velocidad:         65.0,
-        }),
-    });
-    const data = await res.json();
-
-    // Actualizar marcador transportista
-    if (marcadorTransportista) mapa.removeLayer(marcadorTransportista);
-    marcadorTransportista = L.marker([lat, lon], {
-        icon: L.divIcon({
-            className: '',
-            html: `<div style="font-size:1.8rem">🚛</div>`,
-            iconSize: [32, 32],
-        })
-    }).addTo(mapa);
-    marcadorTransportista.bindPopup(`
-        <b>Transportista</b><br>
-        Estado: ${data.estado}<br>
-        Nivel peligro: <b>${data.nivel_peligro}</b><br>
-        Combustible: ${combustible} cm
-    `).openPopup();
-    mapa.flyTo([lat, lon], 7);
-
-    // Alerta
-    if (data.alerta_ordeno) {
-        alertaBox.className = 'alerta-box alerta-ordeno';
-        alertaBox.textContent = '⚠️ ' + data.mensaje;
-    } else {
-        alertaBox.className = 'alerta-box';
-        alertaBox.innerHTML = `
-            ✅ <b>${data.estado}</b><br>
-            Nivel: <b>${data.nivel_peligro}</b><br>
-            Combustible normal`;
-    }
-}
-
-// ── INICIAR ──
 cargarPeligrosidad();
+actualizarBtnCalcular();
 </script>
 </body>
 </html>
