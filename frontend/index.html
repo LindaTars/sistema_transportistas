@@ -279,6 +279,18 @@
                     🧬 Genético
                 </div>
             </div>
+            <div style="margin-bottom:8px">
+                <label style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#718096;display:block;margin-bottom:5px">
+                    🚗 Tipo de vehículo
+                </label>
+                <select id="tipo-vehiculo" style="margin-bottom:0">
+                    <option value="moto">🏍️ Motocicleta</option>
+                    <option value="camioneta" selected>🚙 Camioneta / Pickup</option>
+                    <option value="camion2">🚛 Camión 2 ejes</option>
+                    <option value="camion3">🚚 Camión 3+ ejes / Tráiler</option>
+                </select>
+            </div>
+
             <button class="btn-calcular" id="btn-calcular"
                     onclick="calcularRuta()" disabled>
                 Calcular Ruta
@@ -317,7 +329,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const API = 'http://127.0.0.1:8000';
+const API = window.location.origin;
 
 const COORDS = {
     "Estado de México":  [19.3590, -99.6520],
@@ -355,6 +367,68 @@ const COLORES_ALGO = {
     "manhattan":  "#f6ad55",
     "genetico":   "#fc8181",
 };
+// ── CASETAS: costo base por tramo (MXN, aproximado, bidireccional) ──
+const CASETAS_TRAMOS = {
+    "CDMX-Puebla":                110,
+    "CDMX-Hidalgo":                80,
+    "CDMX-Estado de México":       60,
+    "CDMX-Morelos":                90,
+    "CDMX-Querétaro":             180,
+    "Puebla-Veracruz":            160,
+    "Puebla-Oaxaca":              140,
+    "Puebla-Morelos":              70,
+    "Jalisco-Guanajuato":         120,
+    "Jalisco-Michoacán":          110,
+    "Jalisco-Aguascalientes":      90,
+    "Jalisco-Zacatecas":          130,
+    "Jalisco-Sinaloa":            200,
+    "Guanajuato-Querétaro":        80,
+    "Guanajuato-Michoacán":        90,
+    "Guanajuato-Aguascalientes":   70,
+    "Guanajuato-San Luis Potosí":  110,
+    "Querétaro-San Luis Potosí":  130,
+    "Querétaro-Hidalgo":           90,
+    "San Luis Potosí-Zacatecas":  100,
+    "San Luis Potosí-Tamaulipas": 170,
+    "San Luis Potosí-Nuevo León": 180,
+    "Nuevo León-Tamaulipas":      140,
+    "Nuevo León-Zacatecas":       160,
+    "Tamaulipas-Veracruz":        150,
+    "Veracruz-Oaxaca":            120,
+    "Veracruz-Hidalgo":           110,
+    "Hidalgo-Estado de México":    60,
+    "Morelos-Estado de México":    50,
+    "Oaxaca-Guerrero":            100,
+    "Guerrero-Michoacán":         120,
+    "Michoacán-Morelos":          100,
+    "Chihuahua-Sonora":           180,
+    "Chihuahua-Zacatecas":        200,
+    "Sonora-Sinaloa":             150,
+    "Sinaloa-Zacatecas":          160,
+    "Zacatecas-Aguascalientes":    70,
+};
+
+// Multiplicador de tarifa por tipo de vehículo (relativo a camioneta = 1.0)
+const VEHICULO_CONFIG = {
+    moto:      { label: "Motocicleta",       mult: 0.5  },
+    camioneta: { label: "Camioneta / Pickup", mult: 1.0  },
+    camion2:   { label: "Camión 2 ejes",     mult: 2.2  },
+    camion3:   { label: "Camión 3+ ejes",    mult: 3.8  },
+};
+
+function obtenerCasetaTramo(e1, e2) {
+    const key1 = `${e1}-${e2}`;
+    const key2 = `${e2}-${e1}`;
+    return CASETAS_TRAMOS[key1] ?? CASETAS_TRAMOS[key2] ?? 60;
+}
+
+function calcularCasetasRuta(estadosRuta) {
+    let total = 0;
+    for (let i = 0; i < estadosRuta.length - 1; i++) {
+        total += obtenerCasetaTramo(estadosRuta[i], estadosRuta[i + 1]);
+    }
+    return total;
+}
 
 let pins           = [];
 let marcadoresZona = {};
@@ -584,11 +658,6 @@ function calcularDistanciaLineal(lat1, lon1, lat2, lon2) {
 
 // ── CALCULAR RUTA ──
 async function calcularRuta() {
-    // ... tu código
-}
-
-// ── CALCULAR RUTA ──
-async function calcularRuta() {
     if (pins.length < 2) return;
     const btn = document.getElementById('btn-calcular');
     btn.disabled = true;
@@ -603,8 +672,13 @@ async function calcularRuta() {
     document.getElementById('lista-resultados').innerHTML = '';
     document.getElementById('seccion-resultados').style.display = 'none';
 
+    const tipoVehiculo = document.getElementById('tipo-vehiculo').value;
+    const vehiculoMult  = VEHICULO_CONFIG[tipoVehiculo]?.mult ?? 1.0;
+    const vehiculoLabel = VEHICULO_CONFIG[tipoVehiculo]?.label ?? '';
+
     let rutaCompleta    = [];
     let costoTotal      = 0;
+    let costoCasetas    = 0;  // MXN acumulado
     // Puntos reales para dibujar — empezamos con el primer pin exacto
     let puntosPolyline  = [[pins[0].lat, pins[0].lng]];
 
@@ -633,9 +707,10 @@ async function calcularRuta() {
 
                     costoTotal += parseFloat(kmReal);
                     rutaCompleta = rutaCompleta.length === 0
-                        ? [origen]
+                        ? [pinOrigen.lugar]
                         : rutaCompleta;
-                    rutaCompleta.push(`${destino} (+${kmReal} km por carretera)`);
+                    // Mismo estado: sin caseta intermedia
+                    rutaCompleta.push(`${pinDestino.lugar} (+${kmReal} km por carretera)`);
                 } else {
                     // Fallback: línea recta con distancia aproximada
                     puntosPolyline.push([pinDestino.lat, pinDestino.lng]);
@@ -644,7 +719,7 @@ async function calcularRuta() {
                         pinDestino.lat, pinDestino.lng
                     );
                     costoTotal += distLineal;
-                    rutaCompleta.push(`${destino} (~${distLineal} km)`);
+                    rutaCompleta.push(`${pinDestino.lugar} (~${distLineal} km)`);
                 }
             } catch(e) {
                 puntosPolyline.push([pinDestino.lat, pinDestino.lng]);
@@ -671,9 +746,19 @@ async function calcularRuta() {
             // El último punto es el pin exacto de destino
             puntosPolyline.push([pinDestino.lat, pinDestino.lng]);
 
+            // Calcular casetas para los tramos del backend (estados)
+            costoCasetas += calcularCasetasRuta(data.ruta) * vehiculoMult;
+
+            // Sustituir primer y último elemento (estados) por nombres reales del pin
+            const rutaConNombres = [
+                pinOrigen.lugar,
+                ...data.ruta.slice(1, -1),   // estados intermedios del backend
+                pinDestino.lugar,
+            ];
+
             rutaCompleta = rutaCompleta.length === 0
-                ? data.ruta
-                : [...rutaCompleta, ...data.ruta.slice(1)];
+                ? rutaConNombres
+                : [...rutaCompleta, ...rutaConNombres.slice(1)];
             costoTotal += data.costo_total;
 
         } catch(e) {
@@ -710,6 +795,8 @@ async function calcularRuta() {
         mostrarResultado(algoActual, {
             ruta: rutaCompleta,
             costo_total: costoTotal,
+            costo_casetas: Math.round(costoCasetas),
+            vehiculo: vehiculoLabel,
             pasos: rutaCompleta.length - 1,
         }, null, color);
     }
@@ -740,6 +827,12 @@ function mostrarResultado(algo, data, error, color) {
         return;
     }
 
+    const casetasStr = data.costo_casetas > 0
+        ? `<div class="resultado-costo" style="color:#f6ad55;margin-top:4px">
+               🛣️ Casetas (${data.vehiculo}): $${data.costo_casetas.toLocaleString('es-MX')} MXN aprox.
+           </div>`
+        : '';
+
     lista.innerHTML += `
         <div class="resultado-item" style="--color:${color}">
             <div class="resultado-header">
@@ -750,6 +843,7 @@ function mostrarResultado(algo, data, error, color) {
             <div class="resultado-costo">
                 📏 ${data.costo_total} km &nbsp;|&nbsp; ${data.pasos} tramos
             </div>
+            ${casetasStr}
         </div>`;
 }
 

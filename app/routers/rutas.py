@@ -1,4 +1,3 @@
-# app/routers/rutas.py
 from fastapi import APIRouter, HTTPException
 from app.schemas import RutaRequest, RutaResponse
 
@@ -16,9 +15,6 @@ from app.models import NivelPeligro, PingTransportista
 from app.schemas import PingCreate, PingResponse
 
 router = APIRouter(prefix="/rutas", tags=["Rutas y Algoritmos"])
-
-# Grafo de carreteras entre estados con distancias en km
-# Basado en el mismo grafo del apunte del maestro pero con estados reales
 GRAFO_MEXICO = {
     "Estado de México": {
         "CDMX": 60, "Hidalgo": 120, "Querétaro": 180,
@@ -179,21 +175,13 @@ async def calcular_ruta(request: RutaRequest):
 
 @router.get("/estados-disponibles")
 async def estados_disponibles():
-    """Lista los estados que tienen conexiones en el grafo"""
     return {"estados": sorted(GRAFO_MEXICO.keys())}
 
-#! Datos ESP32
 @router.post("/ping-gps", response_model=PingResponse)
 async def recibir_ping_esp32(
     ping: PingCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    """
-    Recibe la ubicación del ESP32 y devuelve el nivel de peligro de la zona.
-    También detecta ordeñamiento si el combustible baja más de lo esperado.
-    """
-    # 1. Detectar en qué estado está el punto GPS
-    # Por ahora usamos el estado más cercano por coordenadas
     from algoritmos.a_estrella import COORDENADAS
     from math import sin, cos, acos, radians
 
@@ -211,7 +199,6 @@ async def recibir_ping_esp32(
     )
     nombre_estado = estado_cercano[0]
 
-    # 2. Buscar nivel de peligro del estado
     result = await db.execute(
         select(NivelPeligro)
         .join(NivelPeligro.estado)
@@ -222,17 +209,12 @@ async def recibir_ping_esp32(
     nivel_obj = result.scalar_one_or_none()
     nivel_str = nivel_obj.nivel if nivel_obj else "Sin datos"
 
-    # 3. Detectar ordeñamiento
-    # Consumo normal: ~0.35 litros/km para camión pesado
-    # El sensor ultrasónico mide cm → asumimos 1cm = 2 litros en el recipiente
     alerta_ordeno = False
     if ping.nivel_combustible is not None:
         nivel_cm = float(ping.nivel_combustible)
-        # Umbral: si el nivel baja más de 5cm en un ping → alerta
         if nivel_cm < 5.0:
             alerta_ordeno = True
 
-    # 4. Guardar ping en BD
     nuevo_ping = PingTransportista(
         latitud=           ping.latitud,
         longitud=          ping.longitud,

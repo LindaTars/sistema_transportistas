@@ -1,10 +1,5 @@
-# algoritmos/a_estrella.py
-# Algoritmo A* — f(n) = g(n) + h(n)
-# h(n) = distancia en línea recta (Manhattan simplificado entre coordenadas)
-
 from math import sin, cos, acos, radians
 
-# Coordenadas de los estados (centroide aproximado)
 COORDENADAS = {
     "Estado de México":   (19.3590, -99.6520),
     "Jalisco":            (20.6595, -103.3494),
@@ -42,7 +37,6 @@ COORDENADAS = {
 
 
 def geodist(ciudad1: str, ciudad2: str) -> float:
-    """Distancia geodésica en km — heurística h(n) para A*"""
     if ciudad1 not in COORDENADAS or ciudad2 not in COORDENADAS:
         return 0.0
     lat1, lon1 = map(radians, COORDENADAS[ciudad1])
@@ -52,12 +46,10 @@ def geodist(ciudad1: str, ciudad2: str) -> float:
 
 
 def buscar_a_estrella(grafo: dict, inicio: str, destino: str) -> dict:
-    # [f(n), g(n), ciudad, camino]
     nodos_frontera = [[geodist(inicio, destino), 0, inicio, [inicio]]]
     nodos_visitados = []
 
     while nodos_frontera:
-        # Ordenar por f(n) = g(n) + h(n)
         nodos_frontera.sort(key=lambda x: x[0])
         f, g, ciudad_actual, camino = nodos_frontera.pop(0)
 

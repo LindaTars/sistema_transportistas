@@ -1,4 +1,3 @@
-# app/models.py
 from decimal import Decimal
 from sqlalchemy import (
     Boolean, Column, Date, DateTime, Enum,

@@ -1,13 +1,7 @@
-# algoritmos/manhattan.py
-# Distancia Manhattan adaptada a coordenadas geográficas
-# Se usa como heurística alternativa a geodist en A*
-# En grids: |x1-x2| + |y1-y2|  →  aquí: |lat1-lat2| + |lon1-lon2| × factor
-
 from algoritmos.a_estrella import COORDENADAS
 
 
 def manhattan_dist(ciudad1: str, ciudad2: str) -> float:
-    """h(n) Manhattan geográfico — diferencia absoluta de lat + lon en km"""
     if ciudad1 not in COORDENADAS or ciudad2 not in COORDENADAS:
         return 0.0
     lat1, lon1 = COORDENADAS[ciudad1]
@@ -16,7 +10,6 @@ def manhattan_dist(ciudad1: str, ciudad2: str) -> float:
 
 
 def buscar_manhattan(grafo: dict, inicio: str, destino: str) -> dict:
-    """A* usando heurística Manhattan en vez de geodésica"""
     nodos_frontera = [[manhattan_dist(inicio, destino), 0, inicio, [inicio]]]
     nodos_visitados = []
 

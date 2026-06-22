@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.routers import estados, incidentes, peligrosidad, rutas
 import app.models
-
+from fastapi.staticfiles import StaticFiles
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,7 +22,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # en producción cambiar por el dominio real
+    allow_origins=["*"],  
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -31,6 +31,8 @@ app.include_router(estados.router)
 app.include_router(incidentes.router)
 app.include_router(peligrosidad.router)
 app.include_router(rutas.router)
+
+app.mount("/app", StaticFiles(directory="frontend", html=True), name="frontend")
 
 
 @app.get("/")
